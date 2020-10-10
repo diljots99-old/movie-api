@@ -1,0 +1,16 @@
+<VirtualHost *:8080>
+	ServerAdmin admin@diljotsingh.com
+	
+	ServerName moodle.diljotsingh.com	
+
+	DocumentRoot /home/ubuntu/mysites/moodle/moodle
+
+	ErrorLog ${APACHE_LOG_DIR}/error.log
+	
+	<Directory /home/ubuntu/mysites/moodle/>
+		Options Indexes FollowSymLinks
+		AllowOverride None
+		Require all granted
+	</Directory>
+	CustomLog ${APACHE_LOG_DIR}/access.log combined
+</VirtualHost>
