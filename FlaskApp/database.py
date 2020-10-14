@@ -16,6 +16,11 @@ class Database:
         )
 
 
+    def close_connection(self):
+        self.mydb.close()
+    
+    def __del__(self):
+        self.mydb.close()
 
     def get_movies(self):
         mycursor = self.mydb.cursor()
@@ -210,6 +215,15 @@ class Database:
             RESULT.append(ID[0])
         return RESULT
 
+    def get_all_people_ids(self):
+        mycursor = self.mydb.cursor()
+        mycursor.execute("SELECT id FROM people;")
+        listOfMovies = mycursor.fetchall()
+        RESULT = []
+        for ID in listOfMovies:
+            RESULT.append(ID[0])
+        return RESULT
+
     def add_people(self,people_json,profile_picture=None):
         try:
             mycursor = self.mydb.cursor()
@@ -227,5 +241,29 @@ class Database:
             mycursor.execute(sql , values)
 
             self.mydb.commit()
+            app.config['SYSTEM_PEOPLE_IDS'].append(people_json.get("id"))
+        except:
+            pass
+
+    def get_people_details(self,people_id):
+        try:
+            mycursor = self.mydb.cursor()
+            mycursor.execute("SHOW COLUMNS FROM people")
+            columns = mycursor.fetchall()
+            columnsKEYS = []
+            for column in columns:
+                columnsKEYS.append(column[0])
+
+            columnsKEYS = tuple(columnsKEYS)
+
+            mycursor = self.mydb.cursor()
+            mycursor.execute(f"SELECT * FROM people where id={people_id};")
+            gen = mycursor.fetchall()
+
+            for row in gen:
+                torrentDICT = dict(zip(columnsKEYS,row))
+                
+                
+            return torrentDICT
         except:
             pass

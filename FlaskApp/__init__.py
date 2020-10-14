@@ -7,8 +7,8 @@ cors = CORS(app)
 
 app.config['secret_key'] = b"akjskajskajs"
 
-# app.config['DB_HOST']=  "15.207.253.57"
-app.config['DB_HOST']=  "localhost"
+app.config['DB_HOST']=  "15.207.253.57"
+# app.config['DB_HOST']=  "localhost"
 
 # app.config['DB_HOST']=  "www.diljotsingh.com"
 
@@ -32,3 +32,11 @@ from FlaskApp import routes
 #   response.headers.add('Access-Control-Allow-Headers', 'Content-Type,Authorization')
 #   response.headers.add('Access-Control-Allow-Methods', 'GET,PUT,POST,DELETE')
 #   return response
+from FlaskApp.database import *
+
+
+SYSTEM_MOVIE_IDS = Database().get_all_movie_ids()
+app.config['SYSTEM_MOVIE_IDS'] =  SYSTEM_MOVIE_IDS
+
+app.config['SYSTEM_PEOPLE_IDS'] =   Database().get_all_people_ids()
+app.config['THREAD_LIST'] = []

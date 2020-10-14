@@ -269,7 +269,8 @@ class get_complete_movie_details(Resource):
                 for movie in result:
                     movie["adult"] = bool(movie.get("adult"))	
                     movie["streamable"] = bool(movie.get("streamable"))
-                    movie["backdrop_urls"] = get_movie_backdrop_urls(movie_id,width).json
+                  
+                    movie["backdrop_urls"] = get_movie_backdrop_urls().get(movie_id,width).json
                     movie["torrent"] = bool(movie.get("torrent"))
                     movie["genres"] = myDB.get_movie_genres(ID=movie_id)
 
@@ -343,10 +344,10 @@ class search_movie(Resource):
 
 class  movie_credits(Resource):
     def get(self,movie_id):
-        try:
+        # try:
             api = Tmdb_api()
             cast,crew= api.get_movie_credits(movie_id)
             return jsonify({"id":movie_id,"cast":cast,
             "crew":crew})
-        except :
-            pass
+        # except :
+            # pass

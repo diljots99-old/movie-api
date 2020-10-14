@@ -1,4 +1,6 @@
 import requests ,pprint
+from FlaskApp import app
+
 from FlaskApp.database import Database
 import threading
 class Yts_Api:
@@ -253,16 +255,31 @@ class Tmdb_api:
 
             cast = list( JSON.get("cast") )
             crew = list( JSON.get("crew") )
+            
+            if cast is not None:
+                t1 = threading.Thread(target=self.start_people_threading , args=(cast,))
+                
+                t1.start()
+            if crew is not None:
+                t1 = threading.Thread(target=self.start_people_threading , args=(crew,))
+                t1.start()
+                             
+            return cast ,crew
+        else:
+            return [],[]
+
+
+    def start_people_threading(self,cast):
+            try: 
+                SYSTEM_PEOPLE_IDS =  app.config['SYSTEM_PEOPLE_IDS']
+            except: 
+                app.config['SYSTEM_PEOPLE_IDS'] =   Database().get_all_people_ids()
+            
             for person in cast:
                 people_id = person.get("id")
-                t1 = threading.Thread(target=self.add_people_to_db , args=(people_id,))
-                t1.start()
-                # self.add_people_to_db(people_id)
-            for person in crew:
-                people_id = person.get("id")
-                t2 = threading.Thread(target=self.add_people_to_db , args=(people_id,))
-                t2.start()
-            return cast ,crew
+                if people_id not in app.config['SYSTEM_PEOPLE_IDS']:
+                    self.add_people_to_db(people_id)
+
 
 
     def get_people_complete_details_from_id(self,person_id,language=None,append_to_response=None):
@@ -291,3 +308,4 @@ class Tmdb_api:
             else:
                 profile_picture = None
             myDB.add_people(peopleJSON,profile_picture)
+            myDB.close_connection()

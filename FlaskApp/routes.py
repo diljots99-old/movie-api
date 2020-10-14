@@ -8,9 +8,13 @@ import io
 from PIL import Image
 import json
 from FlaskApp.movie import *
+from FlaskApp.people import *
 api = Api(app)
 try:
     SYSTEM_MOVIE_IDS = Database().get_all_movie_ids()
+    app.config['SYSTEM_MOVIE_IDS'] =  SYSTEM_MOVIE_IDS
+
+    app.config['SYSTEM_PEOPLE_IDS'] =   Database().get_all_people_ids()
 except :
     SYSTEM_MOVIE_IDS = None
 
@@ -30,6 +34,9 @@ api.add_resource(get_complete_movie_details,"/get_complete_movie_details/<int:mo
 api.add_resource(search_movie,"/search/movie")
 api.add_resource(movie_credits,"/movie/credits/<int:movie_id>")
 
+api.add_resource(get_people_profile_picture,"/people/profile_image/<int:people_id>")
+
+
 
 
 @app.route("/config")
@@ -38,11 +45,6 @@ def app_config():
     print(type(config))
     config_json = json.dumps(config,default=str)
     return jsonify(json.loads(config_json))
-
-
-
-
-
 
 
 
